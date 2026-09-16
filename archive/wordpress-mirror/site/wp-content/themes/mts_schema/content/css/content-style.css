@@ -1,0 +1,15 @@
+/* Rate Us  */
+.rate-us-page-dm {
+    text-align: center;
+}
+
+.rate-us-page-dm img {
+    margin: 20px auto;
+    display: block;
+}
+
+.rate-us-page-dm .dm-rate-us a {
+    font-size: 35px;
+    margin: 0px 5px;
+    text-decoration: none !important;
+}

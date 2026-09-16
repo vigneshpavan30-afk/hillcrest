@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; background: #E6ECF2; }
+a { color: #08405F; }
+a:hover { color: #0B5C8A; }
+</style>
+</helmet>
+<div style="min-height:100vh;background:#E6ECF2;font-family:'IBM Plex Mono',monospace;">
+
+<div style="position:sticky;top:0;z-index:60;background:#0B2C40;border-bottom:1px solid #0A2A2C;padding:12px 20px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;">
+<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+<div>
+<div style="font:400 15px/1 'IBM Plex Sans',system-ui,sans-serif;color:#fff;letter-spacing:0.02em;">Hillcrest Dental Studio</div>
+<div style="font:400 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:0.2em;text-transform:uppercase;color:#8FB2CB;margin-top:5px;">Full site redesign</div>
+</div>
+<select value="{{ page }}" onChange="{{ setPage }}" style="background:#123F5A;color:#EAF2F8;border:1px solid #275C7B;padding:9px 12px;font:400 12px/1 'IBM Plex Mono',monospace;min-width:210px;">
+<sc-for list="{{ pageOptions }}" as="o" hint-placeholder-count="10">
+<option value="{{ o.id }}">{{ o.label }}</option>
+</sc-for>
+</select>
+<sc-if value="{{ onService }}" hint-placeholder-val="{{ false }}">
+<select value="{{ serviceId }}" onChange="{{ setService }}" style="background:#123F5A;color:#EAF2F8;border:1px solid #275C7B;padding:9px 12px;font:400 12px/1 'IBM Plex Mono',monospace;min-width:200px;">
+<sc-for list="{{ serviceOptions }}" as="o" hint-placeholder-count="13">
+<option value="{{ o.id }}">{{ o.label }}</option>
+</sc-for>
+</select>
+</sc-if>
+<sc-if value="{{ onPost }}" hint-placeholder-val="{{ false }}">
+<select value="{{ postId }}" onChange="{{ setPost }}" style="background:#123F5A;color:#EAF2F8;border:1px solid #275C7B;padding:9px 12px;font:400 12px/1 'IBM Plex Mono',monospace;min-width:240px;">
+<sc-for list="{{ postOptions }}" as="o" hint-placeholder-count="12">
+<option value="{{ o.id }}">{{ o.label }}</option>
+</sc-for>
+</select>
+</sc-if>
+</div>
+<div style="display:flex;gap:6px;">
+<sc-for list="{{ viewModes }}" as="v" hint-placeholder-count="3">
+<button type="button" onClick="{{ v.pick }}" style="background:{{ v.bg }};color:{{ v.fg }};border:1px solid #275C7B;padding:9px 15px;font:400 11px/1 'IBM Plex Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;">{{ v.label }}</button>
+</sc-for>
+</div>
+</div>
+
+<div style="padding:24px 20px 40px;display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;justify-content:center;">
+
+<sc-if value="{{ showDesktop }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1 1 860px;min-width:640px;max-width:1320px;">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:0 2px 9px;font:400 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:0.14em;text-transform:uppercase;color:#5C7488;">
+<span>Desktop · {{ pageLabel }}</span><span>1280 × 900</span>
+</div>
+<div style="height:900px;overflow:auto;background:#FCFDFE;border:1px solid #C3D3E0;box-shadow:0 24px 50px -30px rgba(11,44,64,.45);">
+<dc-import name="Site Page" page="{{ page }}" service-id="{{ serviceId }}" post-id="{{ postId }}" narrow="{{ false }}" navigate="{{ handleNav }}" hint-size="100%,900px"></dc-import>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showPhone }}" hint-placeholder-val="{{ true }}">
+<div style="flex:0 0 392px;">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:0 2px 9px;font:400 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:0.14em;text-transform:uppercase;color:#5C7488;">
+<span>Phone</span><span>390 × 844</span>
+</div>
+<div style="width:392px;height:844px;overflow:auto;background:#FCFDFE;border:1px solid #C3D3E0;box-shadow:0 24px 50px -30px rgba(11,44,64,.45);">
+<dc-import name="Site Page" page="{{ page }}" service-id="{{ serviceId }}" post-id="{{ postId }}" narrow="{{ true }}" navigate="{{ handleNav }}" hint-size="100%,844px"></dc-import>
+</div>
+</div>
+</sc-if>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startPage&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;services&quot;,&quot;service&quot;,&quot;appointments&quot;,&quot;new-patients&quot;,&quot;insurance&quot;,&quot;about&quot;,&quot;doctors&quot;,&quot;difference&quot;,&quot;gallery&quot;,&quot;testimonials&quot;,&quot;blog&quot;,&quot;post&quot;,&quot;contact&quot;,&quot;forms&quot;,&quot;sitemap&quot;,&quot;accessibility&quot;,&quot;thanks&quot;,&quot;404&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;viewMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;both&quot;,&quot;desktop&quot;,&quot;phone&quot;],&quot;default&quot;:&quot;both&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const PAGES = [
+  ['home','Home'],['services','Services index'],['service','Service detail'],
+  ['appointments','Appointments · booking flow'],['new-patients','New Patients'],
+  ['insurance','Insurance & Payment'],['about','Who We Are'],['doctors','Meet Dr. Skaf'],
+  ['difference','The Difference'],['gallery','Office Gallery'],['testimonials','Patient Reviews'],
+  ['blog','Patient Library'],['post','Article'],['contact','Contact & Directions'],
+  ['forms','Online Forms'],['sitemap','Site Map'],['accessibility','Accessibility'],
+  ['thanks','Thank You'],['404','404']
+];
+const SERVICE_IDS = [
+  ['preventive','Preventive Dental Care'],['cleanings','Dental Cleanings'],['pediatric','Pediatric Dentistry'],
+  ['root-canals','Root Canals'],['crowns-bridges','Crowns & Bridges'],['implants','Dental Implants'],
+  ['complete-dentures','Complete Dentures'],['wisdom-teeth','Wisdom Teeth Extractions'],
+  ['cosmetic','Cosmetic Dentistry'],['whitening','Teeth Whitening'],['veneers','Veneers'],
+  ['invisalign','Invisalign'],['tmj-botox','TMJ Treatment with Botox']
+];
+const POST_IDS = [
+  ['emergency-what-counts','What counts as a dental emergency'],
+  ['emergency-kids','Your child chipped a tooth'],
+  ['implant-failure','Why dental implants fail'],
+  ['bridge-materials','Bridge materials compared'],
+  ['whitening-truth','Whitening: what works'],
+  ['veneers-vs-braces','Veneers or orthodontics?'],
+  ['kids-first-visit','Preparing a nervous child'],
+  ['sugar-teeth','It is not how much sugar'],
+  ['bad-breath','Persistent bad breath'],
+  ['gingivitis-vs-perio','Gingivitis versus periodontitis'],
+  ['aligner-adults','Straightening teeth after forty'],
+  ['braces-care','Healthy mouth during orthodontics']
+];
+
+class Component extends DCLogic {
+  state = { page: null, view: null, serviceId: 'preventive', postId: 'emergency-what-counts' };
+
+  renderVals() {
+    const page = this.state.page || this.props.startPage || 'home';
+    const view = this.state.view || this.props.viewMode || 'both';
+    const found = PAGES.find(p => p[0] === page);
+    return {
+      page, serviceId: this.state.serviceId, postId: this.state.postId,
+      pageLabel: found ? found[1] : page,
+      onService: page === 'service', onPost: page === 'post',
+      showDesktop: view !== 'phone', showPhone: view !== 'desktop',
+      pageOptions: PAGES.map(p => ({ id:p[0], label:p[1] })),
+      serviceOptions: SERVICE_IDS.map(p => ({ id:p[0], label:p[1] })),
+      postOptions: POST_IDS.map(p => ({ id:p[0], label:p[1] })),
+      viewModes: [['both','Both'],['desktop','Desktop'],['phone','Phone']].map(v => ({
+        label: v[1],
+        bg: view === v[0] ? '#EAF2F8' : 'transparent',
+        fg: view === v[0] ? '#0B2C40' : '#A9C9DE',
+        pick: () => this.setState({ view: v[0] })
+      })),
+      setPage: e => this.setState({ page: e.target.value }),
+      setService: e => this.setState({ serviceId: e.target.value }),
+      setPost: e => this.setState({ postId: e.target.value }),
+      handleNav: (p, extra) => {
+        if (p === 'service' && extra) this.setState({ page:'service', serviceId: extra });
+        else if (p === 'post' && extra) this.setState({ page:'post', postId: extra });
+        else this.setState({ page: p });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

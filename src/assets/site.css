@@ -1,0 +1,82 @@
+/* Hillcrest Dental Studio: styles from the redesign (design/Site Page.dc.html).
+   Layout values stay inline in the templates, as in the design; this file holds what inline styles can't:
+   hover and focus states, animations, responsive switches and interactive widgets. */
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: #FCFDFE; color: #16232E; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+.page-root { overflow-x: clip; }
+a { color: #08405F; }
+a:hover { color: #0B5C8A; }
+img { display: block; max-width: 100%; }
+input, select, textarea, button { font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+a { transition: color .2s ease, opacity .2s ease, border-color .2s ease; }
+button { transition: background-color .2s ease, border-color .2s ease, color .2s ease, transform .2s ease; }
+input, textarea { transition: border-color .2s ease, background-color .2s ease; }
+input:focus, textarea:focus { outline: none; border-color: #0B5C8A !important; background: #fff !important; }
+:focus-visible { outline: 2px solid #0B5C8A; outline-offset: 2px; }
+
+@keyframes dcUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes dcIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dcDrop { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+@keyframes dcWipe { from { opacity: 0; transform: scale(1.04); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-delay: 0ms !important; transition-duration: .001ms !important; }
+}
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.skip-link { position: absolute; left: 12px; top: -60px; z-index: 100; background: #08405F; color: #fff; padding: 12px 16px; font: 500 12px/1 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; text-decoration: none; }
+.skip-link:focus { top: 12px; color: #fff; }
+[hidden] { display: none !important; }
+
+/* Responsive switch: the design renders a "wide" and a "narrow" variant of the header and home headline. */
+.v-narrow { display: none !important; }
+@media (max-width: 1000px) {
+  .v-wide { display: none !important; }
+  .v-narrow { display: block !important; }
+  .hero-title { font: 300 34px/1.12 'IBM Plex Sans', system-ui, sans-serif !important; letter-spacing: -0.01em !important; margin-top: 16px !important; }
+}
+
+/* Images that fill a positioned container (the design's image slots). */
+.fill { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border: 0; }
+.slot-bg { background: #EEF4F9; }
+
+/* Header dropdowns */
+.dd { position: relative; }
+.dd-panel { display: none !important; }
+.dd:hover > .dd-panel, .dd:focus-within > .dd-panel, .dd.is-open > .dd-panel { display: var(--dd-display, block) !important; }
+.dd.is-closed > .dd-panel { display: none !important; }
+
+/* Hover states (design `style-hover`) */
+.hv-color:hover { color: #0B5C8A !important; }
+.hv-menu:hover { color: #0B5C8A !important; transform: translateX(3px); }
+.hv-btn:hover { background: #08405F !important; color: #fff !important; }
+.hv-btn-lift:hover { background: #08405F !important; color: #fff !important; transform: translateY(-2px); }
+.hv-outline-lift:hover { border-color: #0B5C8A !important; background: #EAF2F8 !important; transform: translateY(-2px); }
+.hv-chip:hover { background: rgba(255,255,255,.12) !important; border-color: #fff !important; color: #fff !important; transform: translateY(-2px); }
+.hv-row:hover { color: #0B5C8A !important; padding-left: 6px !important; }
+.hv-faq:hover { background: rgba(11,92,138,.05); }
+.hv-card:hover { border-color: #0B5C8A !important; transform: translateY(-3px); box-shadow: 0 18px 34px -24px rgba(8,64,95,.45); }
+.hv-card-flat:hover { border-color: #0B5C8A !important; transform: translateY(-3px); }
+.hv-soft:hover { border-color: #0B5C8A !important; background: #F2F7FB !important; }
+.hv-border:hover { border-color: #0B5C8A !important; }
+.hv-border-lift:hover { border-color: #0B5C8A !important; transform: translateY(-2px); }
+.hv-tint:hover { background: #F2F7FB !important; }
+.hv-foot:hover { color: #fff !important; transform: translateX(3px); }
+.hv-menu, .hv-foot, .hv-card, .hv-card-flat, .hv-btn-lift, .hv-outline-lift, .hv-chip { will-change: transform; }
+a.hv-menu, a.hv-foot { display: inline-block; }
+
+/* Forms */
+.form-msg { margin-top: 14px; font: 400 15px/1.5 'IBM Plex Sans', system-ui, sans-serif; animation: dcUp .4s ease both; }
+.form-msg.is-ok { color: #0B5C8A; }
+.form-msg.is-error { color: #A32D2D; }
+.field-error { border-color: #A32D2D !important; }
+.hp-field { position: absolute !important; left: -10000px !important; width: 1px; height: 1px; overflow: hidden; }
+button[disabled] { opacity: .6; cursor: progress !important; }
+
+/* Booking pills */
+.pill.is-on { background: #EAF2F8 !important; border-color: #0B5C8A !important; }
+.bk-step-dot { transition: background-color .3s ease, color .3s ease; }
+
+/* Library topic filters */
+.topic.is-on { background: #08405F !important; border-color: #08405F !important; color: #fff !important; }

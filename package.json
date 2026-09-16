@@ -1,0 +1,22 @@
+{
+  "name": "hillcrest-dental-studio",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "start": "node server.mjs",
+    "dev": "node scripts/build.mjs && node server.mjs",
+    "test": "node tests/e2e.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "optionalDependencies": {
+    "nodemailer": "^6.9.16"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^24.43.1",
+    "sharp": "^0.34.5"
+  }
+}
