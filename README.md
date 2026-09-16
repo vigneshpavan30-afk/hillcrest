@@ -1,6 +1,7 @@
 # Hillcrest Dental Studio website
 
-The production site built from the redesign in `design/` (open `design/Hillcrest Redesign.dc.html` to see the original mockups).
+Premium dark design with a real-time 3D hero (Three.js) and GSAP scroll animation. Design spec:
+`docs/superpowers/specs/2026-09-16-premium-3d-redesign-design.md`. The earlier flat mockups are kept in `design/`.
 
 ```bash
 npm install
@@ -15,11 +16,20 @@ npm test        # browser checks against the running server (uses installed Edge
 | `src/content/design-data.mjs` | Services, articles and topics, copied verbatim from the design |
 | `src/content/site.mjs` | Practice details, URLs, redirects, image choices, page copy lists, SEO titles |
 | `src/render.mjs` | HTML templates for every page (markup and styles follow the design) |
-| `src/assets/site.css`, `site.js` | Hover states, responsive header, menus, booking flow, forms, library filter |
+| `src/assets/site.css` | Design system: tokens, glass cards, typography, layouts, motion start states |
+| `src/client/` | Browser code bundled by esbuild: `main.js` (entry), `ui.js` (header, menus, forms, filter), `booking.js`, `motion.js` (Lenis, GSAP reveals, tilt, magnetic buttons, counters), `hero3d.js` (Three.js sculpture, homepage only) |
+| `src/assets/logo-mark.svg` | Vector tooth mark traced from the logo (`node scripts/trace-logo.mjs`) |
+| `src/assets/hero-poster.png` | Still of the 3D sculpture used as the fallback (`node scripts/render-poster.mjs` with the server running) |
 | `scripts/build.mjs` | Static build into `public/` |
 | `server.mjs` | Serves `public/`, applies redirects, handles form submissions |
 | `tests/e2e.mjs` | End-to-end browser checks |
 | `archive/wordpress-mirror/` | The earlier copy of the WordPress site; its photos are reused by the build |
+
+## 3D and motion
+- The 3D hero loads after first paint, only on the homepage, and only when WebGL is available. It is skipped (poster shown)
+  for reduced motion, data saver and low-memory devices, or with `?no3d` in the URL. Rendering pauses offscreen and in background tabs.
+- Every animation is disabled when the visitor prefers reduced motion; content never depends on JavaScript to be visible.
+- Gzipped JS: core 3 KB, motion 50 KB, 3D chunk 158 KB (homepage, lazy).
 
 ## URLs and SEO
 Every page keeps its current live URL (`/appointments/`, `/dental-implants/`, …). The 34 old blog posts and URL aliases

@@ -2,6 +2,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
+import * as esbuild from 'esbuild';
 import * as C from '../src/content/site.mjs';
 import * as R from '../src/render.mjs';
 
@@ -62,7 +63,7 @@ async function buildImages() {
   return manifest;
 }
 
-// Tooth mark from the practice logo, recolored. Returns the mark's aspect ratio (width / height).
+// Tooth mark from the practice logo, recolored (PNG fallbacks, favicon, structured-data logo).
 async function buildLogo() {
   const { data: alpha, info } = await sharp(path.join(ROOT, C.LOGO.src))
     .extract(C.LOGO.markCrop).extractChannel(3).raw().toBuffer({ resolveWithObject: true });
@@ -88,6 +89,38 @@ async function buildLogo() {
   await icon(180, 'favicon.png');
   await icon(512, 'images/logo-512.png');
   return ratio;
+}
+
+// Vector mark traced by scripts/trace-logo.mjs; inlined into headers and extruded by the 3D hero.
+async function loadLogoSvg() {
+  const svg = await fs.readFile(path.join(ROOT, 'src/assets/logo-mark.svg'), 'utf8');
+  const viewBox = svg.match(/viewBox="([^"]+)"/)?.[1];
+  const d = [...svg.matchAll(/ d="([^"]+)"/g)].map((m) => m[1]).join(' ');
+  if (!viewBox || !d) throw new Error('src/assets/logo-mark.svg is missing a viewBox or path; run node scripts/trace-logo.mjs');
+  return { viewBox, d };
+}
+
+// Still image of the 3D sculpture, shown until WebGL is ready and whenever 3D is skipped.
+async function buildHeroPoster() {
+  const src = path.join(ROOT, 'src/assets/hero-poster.png');
+  if (!(await fs.stat(src).catch(() => null))) return '/images/logo-mark-white.png';
+  await sharp(src).resize({ width: 1000, withoutEnlargement: true }).webp({ quality: 86, alphaQuality: 90 }).toFile(path.join(OUT, 'images/hero-poster.webp'));
+  return '/images/hero-poster.webp';
+}
+
+async function buildClient() {
+  const result = await esbuild.build({
+    entryPoints: { main: path.join(ROOT, 'src/client/main.js') },
+    bundle: true, splitting: true, format: 'esm', minify: true, sourcemap: false,
+    target: ['es2020', 'safari15'], outdir: path.join(OUT, 'assets'),
+    entryNames: '[name]', chunkNames: 'chunks/[name]-[hash]',
+    loader: { '.svg': 'text' }, legalComments: 'none', metafile: true,
+  });
+  await esbuild.build({
+    entryPoints: [path.join(ROOT, 'src/assets/site.css')], bundle: true, minify: true,
+    outfile: path.join(OUT, 'assets/site.css'), external: ['*.svg', '*.png'], target: ['chrome100', 'safari15'],
+  });
+  return Object.entries(result.metafile.outputs).map(([file, o]) => [path.basename(file), o.bytes]);
 }
 
 // --- pages ---------------------------------------------------------------------------
@@ -154,11 +187,15 @@ function pages(images) {
 // --- main ----------------------------------------------------------------------------
 
 const started = Date.now();
-await fs.rm(OUT, { recursive: true, force: true });
+await fs.rm(OUT, { recursive: true, force: true, maxRetries: 10, retryDelay: 250 });
 await fs.mkdir(OUT, { recursive: true });
 
 const images = await buildImages();
-R.setLogoRatio(await buildLogo());
+await buildLogo();
+const logoSvg = await loadLogoSvg();
+R.setLogo(logoSvg.d, logoSvg.viewBox);
+R.setHeroPoster(await buildHeroPoster());
+const bundles = await buildClient();
 R.setImageResolver((src) => {
   if (!images[src]) throw new Error(`Image not processed: ${src}`);
   return images[src];
@@ -178,10 +215,6 @@ for (const [from, to] of Object.entries(C.REDIRECTS)) {
   if (!seen.has(to)) throw new Error(`Redirect ${from} -> ${to} points at a page that does not exist`);
 }
 
-await fs.mkdir(path.join(OUT, 'assets'), { recursive: true });
-for (const asset of ['site.css', 'site.js']) {
-  await fs.copyFile(path.join(ROOT, 'src/assets', asset), path.join(OUT, 'assets', asset));
-}
 
 const today = new Date().toISOString().slice(0, 10);
 const indexable = all.filter((p) => !p.meta.noindex);
@@ -193,4 +226,5 @@ ${indexable.map((p) => `  <url><loc>${C.SITE_URL}${p.path}</loc><lastmod>${today
 await write('robots.txt', `User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${C.SITE_URL}/sitemap.xml\n`);
 await write('_redirects.json', JSON.stringify({ exact: C.REDIRECTS, prefix: C.REDIRECT_PREFIXES }, null, 2));
 
+console.log(bundles.map(([f, n]) => `  ${f} ${(n / 1024).toFixed(1)} KB`).join('\n'));
 console.log(`Built ${all.length} pages + 404, ${Object.keys(images).length} images, ${Object.keys(C.REDIRECTS).length} redirects in ${Date.now() - started}ms`);
