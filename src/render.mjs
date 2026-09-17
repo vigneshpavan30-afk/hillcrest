@@ -444,7 +444,7 @@ ${map(C.DIFFERENCES, (d) => `<article class="glass card tilt" data-reveal="tilt"
 
 export function gallery() {
   return `${pageHero({ label: 'Gallery', title: 'See the office before you sit in the <em>chair.</em>', lede: 'Nine rooms, a sterilization suite you can look into, and a TV in every operatory. Photos below; drop by any weekday for the real thing.' })}
-<section class="section-tight" style="padding-bottom:clamp(52px,6vw,92px);">
+<section class="section-tight" style="padding-bottom:clamp(32px,3.5vw,56px);">
 <div class="container gallery-grid" data-stagger>
 ${map(C.GALLERY_SHOTS, (g) => `<figure data-reveal="tilt">
 <div class="media ratio-4-3">${img(C.IMAGES.gallery[g.sid], { sizes: '(max-width: 700px) 100vw, 400px', parallax: true })}</div>
@@ -724,7 +724,7 @@ ${leadForm({ kind: 'contact', button: 'Send message', success: 'Message sent —
 
 export function blog() {
   return `${pageHero({ label: 'Patient library', title: 'Straight answers, written by the people who <em>treat</em> you.', lede: 'Six topics, organized so you can find the one that matches your situation instead of scrolling a reverse-chronological feed.' })}
-<section class="section-tight" style="padding-bottom:clamp(52px,6vw,92px);">
+<section class="section-tight" style="padding-bottom:clamp(32px,3.5vw,56px);">
 <div class="container">
 <div class="filters" role="toolbar" aria-label="Filter by topic" data-reveal="up">
 ${map(TOPICS, (t, i) => `<button type="button" class="topic${i === 0 ? ' is-on' : ''}" data-topic="${esc(t)}" aria-pressed="${i === 0}">${esc(t)}</button>`)}
@@ -783,7 +783,7 @@ export function forms() {
   const request = (f, format) =>
     `mailto:${P.email}?subject=${encodeURIComponent(`${f.name} (${format})`)}&body=${encodeURIComponent(`Hello, please send me the ${f.name} form (${format}).\n\nName:\nPhone:\n`)}`;
   return `${pageHero({ label: 'Online forms', title: 'Paperwork, done before you <em>arrive.</em>', lede: 'Each form takes two to five minutes and is transmitted over an encrypted connection.' })}
-<section class="section-tight" style="padding-bottom:clamp(52px,6vw,92px);">
+<section class="section-tight" style="padding-bottom:clamp(32px,3.5vw,56px);">
 <div class="container container-narrow grid" data-stagger>
 ${map(C.FORMS_LIST, (f, i) => `<div id="${f.id}" class="glass card tilt" data-reveal="tilt" style="display:flex;flex-wrap:wrap;gap:20px 32px;align-items:center;justify-content:space-between;scroll-margin-top:120px;">
 <div style="flex:1 1 280px;"><span class="mono">0${i + 1}</span><h2 class="card-title" style="margin-top:10px;">${esc(f.name)}</h2><p class="card-text">${esc(f.note)}</p></div>
@@ -798,7 +798,7 @@ ${map(C.FORMS_LIST, (f, i) => `<div id="${f.id}" class="glass card tilt" data-re
 
 export function sitemap() {
   return `${pageHero({ label: 'Site map', title: 'Every page on this <em>site.</em>' })}
-<section class="section-tight" style="padding-bottom:clamp(52px,6vw,92px);">
+<section class="section-tight" style="padding-bottom:clamp(32px,3.5vw,56px);">
 <div class="container grid grid-4" data-stagger>
 ${map(C.SITEMAP_GROUPS, (g) => `<div class="glass card" data-reveal="tilt">
 <h2 class="dd-group-title" style="padding:0 0 14px;">${esc(g.cat)}</h2>
@@ -814,7 +814,7 @@ ${g.cat === 'Library & Legal' ? map(POSTS, (p) => `<a href="${C.postPath(p.id)}"
 
 export function accessibility() {
   return `${pageHero({ label: 'Accessibility', title: 'Our commitment to an accessible <em>practice.</em>' })}
-<section class="section-tight" style="padding-bottom:clamp(52px,6vw,92px);">
+<section class="section-tight" style="padding-bottom:clamp(32px,3.5vw,56px);">
 <div class="container container-narrow">
 <div class="prose" data-reveal="up">
 <p>Hillcrest Dental Studio works to meet WCAG 2.1 AA for this website and to make the office itself easy to use. The building has step-free entry from the parking lot, an accessible restroom, and operatories that accommodate wheelchairs.</p>
