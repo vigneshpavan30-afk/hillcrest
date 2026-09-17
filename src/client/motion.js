@@ -13,6 +13,7 @@ export function initMotion() {
   document.documentElement.classList.add('motion-ready');
   initSmoothScroll();
   initIntro();
+  initSectionEntrances();
   initReveals();
   initParallax();
   initCounters();
@@ -58,6 +59,32 @@ function initIntro() {
       .fromTo(fades, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1.2, stagger: 0.12 }, 0.35);
     title.dataset.done = '1';
   }
+}
+
+// Framer Motion-style 3D entrances: each section's content tilts up, scales in and fades in,
+// scrubbed to scroll position so it reverses when scrolling back. Strongest on the homepage.
+function initSectionEntrances() {
+  const home = document.body.dataset.page === 'home';
+  const narrow = window.matchMedia('(max-width: 700px)').matches;
+  const strength = (home ? 1 : 0.65) * (narrow ? 0.6 : 1);
+  const sections = $$('main > section, main > article > section, body > section')
+    .filter((s) => !s.matches('[data-hero], .page-hero'));
+
+  sections.forEach((section) => {
+    const content = $(':scope > .container', section) || section.firstElementChild;
+    if (!content) return;
+    gsap.fromTo(content, {
+      rotationX: 14 * strength,
+      scale: 1 - 0.08 * strength,
+      y: 90 * strength,
+      opacity: 0.25,
+      transformPerspective: 1400,
+      transformOrigin: '50% 0%',
+    }, {
+      rotationX: 0, scale: 1, y: 0, opacity: 1, ease: 'none',
+      scrollTrigger: { trigger: section, start: 'top 98%', end: 'top 40%', scrub: 0.6 },
+    });
+  });
 }
 
 function initReveals() {

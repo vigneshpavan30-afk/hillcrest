@@ -276,7 +276,6 @@ export function home() {
   return `<section class="hero" data-hero>
 <div class="container hero-grid">
 <div class="hero-copy">
-<div class="eyebrow intro-fade">Family dentistry · Chino Hills, CA</div>
 ${heading('h1', 'display-1', 'Unhurried dental care for every <em>stage</em> of your family\'s life.')}
 <p class="lede intro-fade">Dr. Rana Skaf and team have cared for Chino Valley families for over twenty years. Same-week appointments, transparent pricing, and every option explained before anything begins.</p>
 <div class="hero-actions intro-fade">
