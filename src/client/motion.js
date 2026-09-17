@@ -13,7 +13,6 @@ export function initMotion() {
   document.documentElement.classList.add('motion-ready');
   initSmoothScroll();
   initIntro();
-  initSectionEntrances();
   initReveals();
   initParallax();
   initCounters();
