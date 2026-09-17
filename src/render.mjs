@@ -244,24 +244,9 @@ ${footer()}
 
 // --- shared blocks -------------------------------------------------------------------------
 
-const SVC_SHAPES = ['Shield', 'Crown', 'Sparkle', 'Aligner'];
-
-function serviceScene() {
-  return `<div class="svc-scene" data-svc-scene>
-<div class="svc-stage" aria-hidden="true">
-<div class="svc-stage-inner glass">
-<canvas class="svc-canvas"></canvas>
-<div class="svc-stage-caption"><span class="mono" data-svc-num>01</span><span class="svc-stage-title" data-svc-title>${esc(GROUPS[0].cat)}</span></div>
-<div class="svc-stage-dots">${map(GROUPS, (g, i) => `<span class="${i === 0 ? 'is-on' : ''}"></span>`)}</div>
-</div>
-</div>
-${serviceGroupCards()}
-</div>`;
-}
-
 function serviceGroupCards() {
-  return `<div class="grid grid-4 svc-cards" data-svc-cards data-stagger>
-${map(GROUPS, (g, i) => `<div class="glass card tilt svc-group" data-reveal="tilt" data-svc-index="${i}" data-svc-shape="${SVC_SHAPES[i]}">
+  return `<div class="grid grid-4" data-stagger>
+${map(GROUPS, (g, i) => `<div class="glass card tilt svc-group" data-reveal="tilt">
 <div class="card-num">0${i + 1}</div>
 <h3 class="card-title">${esc(g.cat)}</h3>
 <p class="card-text">${esc(g.blurb)}</p>
@@ -272,21 +257,13 @@ ${map(g.ids, (id) => `<a href="${C.servicePath(id)}">${esc(svcById(id).name)}</a
 </div>`;
 }
 
-function reviewsCoverflow(list) {
-  return `<div class="coverflow" data-coverflow role="region" aria-roledescription="carousel" aria-label="Patient reviews" data-reveal="up">
-<div class="cf-track" data-cf-track>
-${map(list, (r, i) => `<figure class="review glass cf-slide" data-cf-slide="${i}" aria-roledescription="slide" aria-label="${i + 1} of ${list.length}">
+function reviewsMarquee(list) {
+  const card = (r, dup) => `<figure class="review glass"${dup ? ' aria-hidden="true" data-dup' : ''}>
 <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
 <blockquote><p>“${esc(r.quote)}”</p></blockquote>
 <figcaption class="mono">${esc(r.name)} · Google</figcaption>
-</figure>`)}
-</div>
-<div class="carousel-controls cf-controls" hidden>
-<button type="button" class="round-btn" data-cf-prev aria-label="Previous review">←</button>
-<div class="dots">${map(list, (r, i) => `<button type="button" class="dot${i === 0 ? ' is-on' : ''}" data-cf-dot="${i}" aria-label="Show review ${i + 1}"></button>`)}</div>
-<button type="button" class="round-btn" data-cf-next aria-label="Next review">→</button>
-</div>
-</div>`;
+</figure>`;
+  return `<div class="marquee" data-reveal="up"><div class="marquee-track">${map(list, (r) => card(r, false))}${map(list, (r) => card(r, true))}</div></div>`;
 }
 
 function faqList(items) {
@@ -334,42 +311,27 @@ ${map(C.QUICK_REASONS, (q) => `<a href="${C.servicePath(q.id)}" class="reason" d
 <section class="section">
 <div class="container">
 ${sectionHead({ label: 'Services', title: 'Everything your family needs, under <em>one roof.</em>', lede: 'Thirteen services grouped the way patients actually think about them — so you can find what you need without scanning a menu of twenty links.', link: `<a class="link-arrow" href="${C.pagePath('services')}">All services</a>` })}
-${serviceScene()}
+${serviceGroupCards()}
 </div>
 </section>
 
 <section class="section section-alt">
 <div class="container">
 ${sectionHead({ label: 'The difference', title: 'Four things we refuse to <em>compromise</em> on.', link: `<a class="link-arrow" href="${C.pagePath('difference')}">Our approach</a>` })}
-<div class="ring-scene" data-ring>
-<div class="ring" data-ring-track data-stagger>
-${map(C.DIFFERENCES, (d, i) => `<article class="glass card ring-card" data-reveal="tilt" data-ring-index="${i}">
+<div class="grid grid-4" data-stagger>
+${map(C.DIFFERENCES, (d) => `<div class="glass card tilt" data-reveal="tilt">
 <div class="card-num">${d.num}</div>
 <h3 class="card-title">${esc(d.title)}</h3>
 <p class="card-text">${esc(d.body)}</p>
-</article>`)}
-</div>
-<div class="carousel-controls ring-controls" hidden>
-<button type="button" class="round-btn" data-ring-prev aria-label="Previous principle">←</button>
-<div class="dots">${map(C.DIFFERENCES, (d, i) => `<button type="button" class="dot${i === 0 ? ' is-on' : ''}" data-ring-dot="${i}" aria-label="Show ${esc(d.title)}"></button>`)}</div>
-<button type="button" class="round-btn" data-ring-next aria-label="Next principle">→</button>
-</div>
+</div>`)}
 </div>
 </div>
 </section>
 
 <section class="section">
 <div class="container split">
-<div class="depth-wrap" data-reveal="scale">
-<div class="depth" data-depth-stack>
-<div class="depth-layer depth-plate" style="--z:-70;"></div>
-<div class="depth-layer depth-rings" style="--z:-30;"></div>
-<div class="depth-layer media ratio-4-5 depth-photo" style="--z:0;">${img(C.IMAGES.doctor, { sizes: '(max-width: 900px) 100vw, 560px' })}</div>
-<div class="depth-layer depth-frame" style="--z:40;"></div>
-<div class="depth-layer depth-badge depth-badge-1 glass" style="--z:110;"><strong>20+</strong><span>Years in dentistry</span></div>
-<div class="depth-layer depth-badge depth-badge-2 glass" style="--z:150;"><strong>DDS</strong><span>Loma Linda University</span></div>
-<div class="depth-layer depth-badge depth-badge-3 glass" style="--z:90;"><span class="dot"></span><span>Periodontal specialization</span></div>
-</div>
+<div class="frame" data-reveal="scale">
+<div class="media ratio-4-5">${img(C.IMAGES.doctor, { sizes: '(max-width: 900px) 100vw, 560px', parallax: true })}</div>
 </div>
 <div>
 ${eyebrow('Your dentist')}
@@ -393,7 +355,7 @@ ${eyebrow('Patient reviews')}
 <div data-reveal="up"><a class="link-arrow" href="${C.pagePath('testimonials')}">All reviews</a></div>
 </div>
 </div>
-<div class="container">${reviewsCoverflow(C.ALL_REVIEWS)}</div>
+${reviewsMarquee(C.ALL_REVIEWS)}
 </section>
 
 <section class="section">
