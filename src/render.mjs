@@ -337,7 +337,7 @@ ${map(C.DIFFERENCES, (d) => `<div class="glass card tilt" data-reveal="tilt">
 </div>
 <div>
 ${eyebrow('Your dentist')}
-${heading('h2', 'display-2', 'Dr. Rana Skaf DDS')}
+<div class="doc-name">${heading('h2', 'display-2', 'Dr. Rana Skaf')}<div class="doc-cred" data-reveal="up">— DDS</div></div>
 <div class="prose mt-m" data-reveal="up">
 <p>Twenty years in dentistry, a Doctorate of Dental Surgery from Loma Linda University, and a periodontal specialization from Damascus University. Dr. Skaf has lived in Chino Valley for fifteen years and now owns and leads the practice.</p>
 </div>
@@ -413,7 +413,7 @@ export function doctors() {
 <div class="frame sticky" data-reveal="scale"><div class="media ratio-4-5">${img(C.IMAGES.doctor, { sizes: '(max-width: 900px) 100vw, 560px', eager: true })}</div></div>
 <div>
 ${eyebrow('Owner &amp; lead dentist')}
-${heading('h1', 'display-2', 'Dr. Rana Skaf DDS')}
+<div class="doc-name">${heading('h1', 'display-2', 'Dr. Rana Skaf')}<div class="doc-cred" data-reveal="up">— DDS</div></div>
 <div class="prose mt-m" data-reveal="up">
 <p>For more than twenty years, dentistry has been my passion and my purpose. I earned my Doctorate of Dental Surgery from Loma Linda University, after completing my dental degree and periodontal specialization at Damascus University.</p>
 <p>I've cared for patients at every stage of life, and the thing that has never changed is how I work: gentle communication, thoughtful treatment planning, and a genuine commitment to each person's comfort and long-term oral health.</p>

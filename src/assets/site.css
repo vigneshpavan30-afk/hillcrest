@@ -103,6 +103,10 @@ address { font-style: normal; }
 .display-1 em .line > span, .display-2 em .line > span, .display-3 em .line > span, .display-4 em .line > span {
   background: linear-gradient(100deg, #B08A4A, #8F6A2C 55%, #0E7F7B 140%); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .06em;
 }
+/* Doctor name with the credential right-aligned beneath it. */
+.doc-name { display: inline-block; margin-top: 18px; }
+.doc-name .display-2 { white-space: nowrap; margin-top: 0; }
+.doc-cred { text-align: right; margin-top: 6px; font: 300 clamp(28px, 3.2vw, 46px)/1 var(--serif); letter-spacing: -.02em; color: var(--text); }
 .lede { font-size: clamp(17px, 1.5vw, 20px); line-height: 1.7; color: var(--text-2); max-width: 60ch; }
 .muted { color: var(--text-2); }
 .small { font-size: 14px; color: var(--text-3); }
