@@ -90,6 +90,7 @@ address { font-style: normal; }
 /* ---------- type ---------- */
 .eyebrow { display: inline-flex; align-items: center; gap: 12px; font: 500 12px/1 var(--mono); letter-spacing: .22em; text-transform: uppercase; color: var(--teal); }
 .eyebrow::before { content: ''; width: 28px; height: 1px; background: linear-gradient(90deg, transparent, currentColor); }
+.eyebrow.credential { margin-top: 14px; }
 .display-1, .display-2, .display-3, .display-4 { font-family: var(--serif); font-weight: 300; color: var(--text); font-optical-sizing: auto; text-wrap: balance; }
 .display-1 { font-size: clamp(38px, 4.8vw, 72px); line-height: 1.04; letter-spacing: -.03em; }
 .display-2 { font-size: clamp(38px, 5vw, 72px); line-height: 1.03; letter-spacing: -.03em; }
