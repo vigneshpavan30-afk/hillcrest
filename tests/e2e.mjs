@@ -63,8 +63,9 @@ try {
     const shot = await (await page.$('.hero-canvas')).screenshot();
     const { data } = await sharp(shot).resize(64, 64).removeAlpha().raw().toBuffer({ resolveWithObject: true });
     let pixels = 0;
-    for (let i = 0; i < data.length; i += 3) if (data[i] + data[i + 1] + data[i + 2] > 540) pixels++;
-    check('3D sculpture draws visible pixels', pixels > 40, `${pixels} bright px`);
+    // The navy-pearl sculpture is strongly blue against the pale page.
+    for (let i = 0; i < data.length; i += 3) if (data[i + 2] - data[i] > 50 && data[i] < 150) pixels++;
+    check('3D sculpture draws visible pixels', pixels > 40, `${pixels} sculpture px`);
     await page.close();
   }
 
@@ -90,6 +91,56 @@ try {
     check('reduced motion disables animation', !state.motion && !state.is3d, JSON.stringify(state));
     check('reduced motion shows all content', state.hidden === 0, `${state.hidden} faded elements`);
     await page.close();
+  }
+
+  // Homepage 3D components
+  {
+    const page = await open('/');
+    const svc3d = await page.waitForSelector('[data-svc-scene].is-3d', { timeout: 20000 }).then(() => true).catch(() => false);
+    check('services 3D stage enabled on desktop', svc3d);
+    const cardTops = await page.$$eval('[data-svc-index]', (els) => els.map((e) => e.getBoundingClientRect().top + window.scrollY));
+    const actives = [];
+    for (const y of cardTops) {
+      await page.evaluate((v) => window.scrollTo(0, v - 250), y);
+      await sleep(700);
+      actives.push(await page.$eval('.svc-group.is-active', (e) => e.dataset.svcIndex));
+    }
+    check('services cards activate in order while scrolling', actives.join() === '0,1,2,3', actives.join());
+    check('services stage caption follows active card', (await page.$eval('[data-svc-title]', (e) => e.textContent)).includes('Orthodontics'));
+
+    check('difference ring is 3D', await page.$eval('[data-ring]', (e) => e.classList.contains('is-3d')));
+    const ringTop = await page.$eval('[data-ring]', (e) => e.getBoundingClientRect().top + window.scrollY);
+    await page.evaluate((v) => window.scrollTo(0, v - 200), ringTop);
+    await sleep(900);
+    const before = await page.$eval('[data-ring-dot].is-on', (d) => d.dataset.ringDot);
+    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 1.5));
+    await sleep(1500);
+    const after = await page.$eval('[data-ring-dot].is-on', (d) => d.dataset.ringDot);
+    check('ring rotates to a new card on scroll', before !== after, `${before} -> ${after}`);
+
+    check('coverflow is 3D', await page.$eval('[data-coverflow]', (e) => e.classList.contains('is-3d')));
+    const activeSlide = () => page.$eval('[data-cf-slide].is-active', (s) => s.dataset.cfSlide);
+    const cf0 = await activeSlide();
+    await page.$eval('[data-cf-next]', (b) => b.click());
+    const cf1 = await activeSlide();
+    await page.$eval('[data-cf-prev]', (b) => b.click());
+    check('coverflow next/prev buttons move slides', cf0 !== cf1 && (await activeSlide()) === cf0, `${cf0} -> ${cf1}`);
+    const layers = await page.$$eval('[data-depth-stack] .depth-layer', (l) => l.length);
+    check('doctor depth stack has layers', layers >= 5, String(layers));
+    await page.close();
+
+    const reduced = await open('/', { reducedMotion: true });
+    await sleep(1500);
+    const flat = await reduced.evaluate(() => ({
+      ring: document.querySelector('[data-ring]').classList.contains('is-3d'),
+      svc: document.querySelector('[data-svc-scene]').classList.contains('is-3d'),
+      cf: document.querySelector('[data-coverflow]').classList.contains('is-3d'),
+    }));
+    check('reduced motion keeps ring and services flat', !flat.ring && !flat.svc, JSON.stringify(flat));
+    const r0 = await reduced.$eval('[data-cf-slide].is-active', (s) => s.dataset.cfSlide);
+    await sleep(6500);
+    check('reduced motion coverflow does not autoplay', (await reduced.$eval('[data-cf-slide].is-active', (s) => s.dataset.cfSlide)) === r0);
+    await reduced.close();
   }
 
   // Scroll reveals eventually show everything

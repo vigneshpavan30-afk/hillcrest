@@ -26,7 +26,7 @@ let svgCount = 0;
 function mark(cls = 'brand-mark', title = '') {
   const id = `lg${++svgCount}`;
   return `<svg class="${cls}" viewBox="${logo.viewBox}" ${title ? `role="img" aria-label="${esc(title)}"` : 'aria-hidden="true"'} focusable="false">
-<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F4F8FA"/><stop offset=".55" stop-color="#9FE3DF"/><stop offset="1" stop-color="#D6B77C"/></linearGradient></defs>
+<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#08405F"/><stop offset=".6" stop-color="#1E8E93"/><stop offset="1" stop-color="#B08A4A"/></linearGradient></defs>
 <path fill="url(#${id})" d="${logo.d}"/></svg>`;
 }
 
@@ -177,7 +177,6 @@ ${link('accessibility', 'Accessibility')}
 </div>
 </div>
 </div>
-<div class="footer-word" aria-hidden="true">Hillcrest</div>
 <div class="footer-bottom">
 <span>© ${new Date().getFullYear()} Hillcrest Dental Studio</span>
 <span>Dr. Rana Skaf, DDS · Chino Hills, California</span>
@@ -219,13 +218,13 @@ ${meta.noindex ? '<meta name="robots" content="noindex" />' : `<link rel="canoni
 <meta property="og:url" content="${canonical}" />
 ${ogImage ? `<meta property="og:image" content="${C.SITE_URL}${ogImage}" />` : ''}
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="theme-color" content="#070D14" />
+<meta name="theme-color" content="#F5F8FA" />
 <script>(function(d){var m=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;if(!m)d.documentElement.classList.add('motion');})(document);</script>
 <link rel="icon" type="image/png" href="/favicon.png" />
 <link rel="apple-touch-icon" href="/favicon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..400&family=Manrope:wght@400..700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="/assets/site.css" />
 ${page === 'home' ? `<link rel="modulepreload" href="/assets/main.js" />` : ''}
 ${map(ld, (o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`)}
@@ -245,9 +244,24 @@ ${footer()}
 
 // --- shared blocks -------------------------------------------------------------------------
 
+const SVC_SHAPES = ['Shield', 'Crown', 'Sparkle', 'Aligner'];
+
+function serviceScene() {
+  return `<div class="svc-scene" data-svc-scene>
+<div class="svc-stage" aria-hidden="true">
+<div class="svc-stage-inner glass">
+<canvas class="svc-canvas"></canvas>
+<div class="svc-stage-caption"><span class="mono" data-svc-num>01</span><span class="svc-stage-title" data-svc-title>${esc(GROUPS[0].cat)}</span></div>
+<div class="svc-stage-dots">${map(GROUPS, (g, i) => `<span class="${i === 0 ? 'is-on' : ''}"></span>`)}</div>
+</div>
+</div>
+${serviceGroupCards()}
+</div>`;
+}
+
 function serviceGroupCards() {
-  return `<div class="grid grid-4" data-stagger>
-${map(GROUPS, (g, i) => `<div class="glass card tilt svc-group" data-reveal="tilt">
+  return `<div class="grid grid-4 svc-cards" data-svc-cards data-stagger>
+${map(GROUPS, (g, i) => `<div class="glass card tilt svc-group" data-reveal="tilt" data-svc-index="${i}" data-svc-shape="${SVC_SHAPES[i]}">
 <div class="card-num">0${i + 1}</div>
 <h3 class="card-title">${esc(g.cat)}</h3>
 <p class="card-text">${esc(g.blurb)}</p>
@@ -258,13 +272,21 @@ ${map(g.ids, (id) => `<a href="${C.servicePath(id)}">${esc(svcById(id).name)}</a
 </div>`;
 }
 
-function reviewsMarquee(list) {
-  const card = (r, dup) => `<figure class="review glass"${dup ? ' aria-hidden="true" data-dup' : ''}>
+function reviewsCoverflow(list) {
+  return `<div class="coverflow" data-coverflow role="region" aria-roledescription="carousel" aria-label="Patient reviews" data-reveal="up">
+<div class="cf-track" data-cf-track>
+${map(list, (r, i) => `<figure class="review glass cf-slide" data-cf-slide="${i}" aria-roledescription="slide" aria-label="${i + 1} of ${list.length}">
 <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
 <blockquote><p>“${esc(r.quote)}”</p></blockquote>
 <figcaption class="mono">${esc(r.name)} · Google</figcaption>
-</figure>`;
-  return `<div class="marquee" data-reveal="up"><div class="marquee-track">${map(list, (r) => card(r, false))}${map(list, (r) => card(r, true))}</div></div>`;
+</figure>`)}
+</div>
+<div class="carousel-controls cf-controls" hidden>
+<button type="button" class="round-btn" data-cf-prev aria-label="Previous review">←</button>
+<div class="dots">${map(list, (r, i) => `<button type="button" class="dot${i === 0 ? ' is-on' : ''}" data-cf-dot="${i}" aria-label="Show review ${i + 1}"></button>`)}</div>
+<button type="button" class="round-btn" data-cf-next aria-label="Next review">→</button>
+</div>
+</div>`;
 }
 
 function faqList(items) {
@@ -312,27 +334,42 @@ ${map(C.QUICK_REASONS, (q) => `<a href="${C.servicePath(q.id)}" class="reason" d
 <section class="section">
 <div class="container">
 ${sectionHead({ label: 'Services', title: 'Everything your family needs, under <em>one roof.</em>', lede: 'Thirteen services grouped the way patients actually think about them — so you can find what you need without scanning a menu of twenty links.', link: `<a class="link-arrow" href="${C.pagePath('services')}">All services</a>` })}
-${serviceGroupCards()}
+${serviceScene()}
 </div>
 </section>
 
 <section class="section section-alt">
 <div class="container">
 ${sectionHead({ label: 'The difference', title: 'Four things we refuse to <em>compromise</em> on.', link: `<a class="link-arrow" href="${C.pagePath('difference')}">Our approach</a>` })}
-<div class="grid grid-4" data-stagger>
-${map(C.DIFFERENCES, (d) => `<div class="glass card tilt" data-reveal="tilt">
+<div class="ring-scene" data-ring>
+<div class="ring" data-ring-track data-stagger>
+${map(C.DIFFERENCES, (d, i) => `<article class="glass card ring-card" data-reveal="tilt" data-ring-index="${i}">
 <div class="card-num">${d.num}</div>
 <h3 class="card-title">${esc(d.title)}</h3>
 <p class="card-text">${esc(d.body)}</p>
-</div>`)}
+</article>`)}
+</div>
+<div class="carousel-controls ring-controls" hidden>
+<button type="button" class="round-btn" data-ring-prev aria-label="Previous principle">←</button>
+<div class="dots">${map(C.DIFFERENCES, (d, i) => `<button type="button" class="dot${i === 0 ? ' is-on' : ''}" data-ring-dot="${i}" aria-label="Show ${esc(d.title)}"></button>`)}</div>
+<button type="button" class="round-btn" data-ring-next aria-label="Next principle">→</button>
+</div>
 </div>
 </div>
 </section>
 
 <section class="section">
 <div class="container split">
-<div class="frame" data-reveal="scale">
-<div class="media ratio-4-5">${img(C.IMAGES.doctor, { sizes: '(max-width: 900px) 100vw, 560px', parallax: true })}</div>
+<div class="depth-wrap" data-reveal="scale">
+<div class="depth" data-depth-stack>
+<div class="depth-layer depth-plate" style="--z:-70;"></div>
+<div class="depth-layer depth-rings" style="--z:-30;"></div>
+<div class="depth-layer media ratio-4-5 depth-photo" style="--z:0;">${img(C.IMAGES.doctor, { sizes: '(max-width: 900px) 100vw, 560px' })}</div>
+<div class="depth-layer depth-frame" style="--z:40;"></div>
+<div class="depth-layer depth-badge depth-badge-1 glass" style="--z:110;"><strong>20+</strong><span>Years in dentistry</span></div>
+<div class="depth-layer depth-badge depth-badge-2 glass" style="--z:150;"><strong>DDS</strong><span>Loma Linda University</span></div>
+<div class="depth-layer depth-badge depth-badge-3 glass" style="--z:90;"><span class="dot"></span><span>Periodontal specialization</span></div>
+</div>
 </div>
 <div>
 ${eyebrow('Your dentist')}
@@ -340,7 +377,7 @@ ${heading('h2', 'display-2', 'Dr. Rana Skaf, <em>DDS</em>')}
 <div class="prose mt-m" data-reveal="up">
 <p>Twenty years in dentistry, a Doctorate of Dental Surgery from Loma Linda University, and a periodontal specialization from Damascus University. Dr. Skaf has lived in Chino Valley for fifteen years and now owns and leads the practice.</p>
 </div>
-<blockquote class="display-4 mt-m" data-reveal="up" style="font-style:italic;color:var(--gold-2);">“Every smile tells a story. My job is to help you protect yours — with knowledge first, then treatment.”</blockquote>
+<blockquote class="display-4 mt-m" data-reveal="up" style="font-style:italic;color:var(--navy);">“Every smile tells a story. My job is to help you protect yours — with knowledge first, then treatment.”</blockquote>
 <div class="hero-actions" data-reveal="up">${btn(C.pagePath('doctors'), 'Read her full story', 'ghost')}</div>
 </div>
 </div>
@@ -356,7 +393,7 @@ ${eyebrow('Patient reviews')}
 <div data-reveal="up"><a class="link-arrow" href="${C.pagePath('testimonials')}">All reviews</a></div>
 </div>
 </div>
-${reviewsMarquee(C.ALL_REVIEWS)}
+<div class="container">${reviewsCoverflow(C.ALL_REVIEWS)}</div>
 </section>
 
 <section class="section">

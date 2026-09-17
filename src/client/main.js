@@ -2,6 +2,7 @@
 import { $, prefersReducedMotion } from './util.js';
 import { initHeader, initDropdowns, initMobileMenu, initLeadForms, initLibraryFilter } from './ui.js';
 import { initBooking } from './booking.js';
+import { initCoverflow } from './coverflow.js';
 
 const reduced = prefersReducedMotion();
 let motion = null;
@@ -23,7 +24,9 @@ initLeadForms();
   initMobileMenu({ onOpen: (menu) => motion?.animateMenu(menu) });
   initLibraryFilter({ onChange: (cards) => motion?.animateCards(cards) });
   initBooking({ animateStep: (pane, dir) => motion?.animateStep(pane, dir) });
+  initCoverflow({ autoplay: !reduced });
   initHero3d();
+  initServices3d();
 })();
 
 function canRender3d() {
@@ -49,4 +52,24 @@ function initHero3d() {
   // Let the page paint and the intro start before loading three.js.
   if ('requestIdleCallback' in window) requestIdleCallback(load, { timeout: 1200 });
   else setTimeout(load, 400);
+}
+
+// Services WebGL stage: desktop-width screens only; smaller screens keep the card grid.
+function initServices3d() {
+  const scene = $('[data-svc-scene]');
+  if (!scene || !motion || !canRender3d() || !window.matchMedia('(min-width: 961px)').matches) return;
+  const stage = $('.svc-stage-inner', scene);
+  const canvas = $('.svc-canvas', scene);
+  const load = () => import('./services3d.js')
+    .then(({ mountServices }) => {
+      scene.classList.add('is-3d'); // layout first so the canvas has a size
+      const api = mountServices(stage, canvas);
+      motion.initServiceScene(api);
+    })
+    .catch((err) => {
+      scene.classList.remove('is-3d');
+      console.warn('Services 3D unavailable', err);
+    });
+  if ('requestIdleCallback' in window) requestIdleCallback(load, { timeout: 2000 });
+  else setTimeout(load, 800);
 }

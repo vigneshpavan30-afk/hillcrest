@@ -4,7 +4,7 @@
 import {
   WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, ExtrudeGeometry, MeshPhysicalMaterial, Color,
   PMREMGenerator, AmbientLight, DirectionalLight, PointLight, BufferGeometry, Float32BufferAttribute, Points,
-  PointsMaterial, AdditiveBlending, CanvasTexture, SRGBColorSpace, ACESFilmicToneMapping, Box3, Vector3, MathUtils,
+  PointsMaterial, NormalBlending, CanvasTexture, SRGBColorSpace, ACESFilmicToneMapping, Box3, Vector3, MathUtils,
 } from 'three';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
@@ -12,7 +12,7 @@ import logoSvg from '../assets/logo-mark.svg';
 
 function buildSculpture() {
   const data = new SVGLoader().parse(logoSvg);
-  const shapes = data.paths.flatMap((p) => SVGLoader.createShapes(p));
+  const shapes = data.paths.flatMap((p) => p.toShapes(true));
   const geometry = new ExtrudeGeometry(shapes, {
     depth: 70, bevelEnabled: true, bevelThickness: 26, bevelSize: 14, bevelSegments: 10, curveSegments: 28,
   });
@@ -23,18 +23,19 @@ function buildSculpture() {
   const scale = 3.2 / Math.max(size.x, size.y);
 
   const material = new MeshPhysicalMaterial({
-    color: new Color('#EAF6F6'),
-    metalness: 0.08,
-    roughness: 0.16,
+    // Deep navy pearl: reads clearly on the light page, with teal sheen and a glossy clearcoat.
+    color: new Color('#0B4C6E'),
+    metalness: 0.25,
+    roughness: 0.22,
     clearcoat: 1,
-    clearcoatRoughness: 0.06,
-    iridescence: 0.55,
-    iridescenceIOR: 1.35,
-    iridescenceThicknessRange: [180, 520],
-    sheen: 0.6,
-    sheenColor: new Color('#9FE3DF'),
-    sheenRoughness: 0.4,
-    envMapIntensity: 1.25,
+    clearcoatRoughness: 0.05,
+    iridescence: 0.45,
+    iridescenceIOR: 1.4,
+    iridescenceThicknessRange: [220, 600],
+    sheen: 0.8,
+    sheenColor: new Color('#6FD3CF'),
+    sheenRoughness: 0.35,
+    envMapIntensity: 1.5,
   });
   const mesh = new Mesh(geometry, material);
   mesh.scale.set(scale, -scale, scale); // SVG y axis points down
@@ -58,15 +59,15 @@ function buildDust(count) {
   c.width = c.height = 64;
   const g = c.getContext('2d');
   const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
-  grad.addColorStop(0, 'rgba(255,255,255,1)');
-  grad.addColorStop(0.3, 'rgba(214,183,124,.6)');
-  grad.addColorStop(1, 'rgba(214,183,124,0)');
+  grad.addColorStop(0, 'rgba(176,138,74,1)');
+  grad.addColorStop(0.35, 'rgba(176,138,74,.55)');
+  grad.addColorStop(1, 'rgba(176,138,74,0)');
   g.fillStyle = grad;
   g.fillRect(0, 0, 64, 64);
   const texture = new CanvasTexture(c);
   texture.colorSpace = SRGBColorSpace;
 
-  const material = new PointsMaterial({ size: 0.07, map: texture, transparent: true, depthWrite: false, blending: AdditiveBlending, opacity: 0.85 });
+  const material = new PointsMaterial({ size: 0.06, map: texture, transparent: true, depthWrite: false, blending: NormalBlending, opacity: 0.7 });
   return { points: new Points(geometry, material), geometry, material, texture };
 }
 
@@ -79,7 +80,7 @@ export async function mountHero(container, canvas) {
   const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
   renderer.toneMapping = ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
+  renderer.toneMappingExposure = 1.15;
   renderer.outputColorSpace = SRGBColorSpace;
 
   const scene = new Scene();
@@ -90,14 +91,14 @@ export async function mountHero(container, canvas) {
   const camera = new PerspectiveCamera(32, 1, 0.1, 100);
   camera.position.set(0, 0, 8.6);
 
-  scene.add(new AmbientLight('#BFD8E6', 0.35));
-  const key = new DirectionalLight('#FFFFFF', 2.2);
+  scene.add(new AmbientLight('#DDEFF5', 0.6));
+  const key = new DirectionalLight('#FFFFFF', 2.6);
   key.position.set(3, 4, 5);
   scene.add(key);
-  const rimTeal = new PointLight('#6FD3CF', 40, 20);
+  const rimTeal = new PointLight('#6FD3CF', 55, 20);
   rimTeal.position.set(-4, 1.5, -1.5);
   scene.add(rimTeal);
-  const rimGold = new PointLight('#D6B77C', 30, 20);
+  const rimGold = new PointLight('#E8C98C', 45, 20);
   rimGold.position.set(4, -2.5, 1);
   scene.add(rimGold);
 
