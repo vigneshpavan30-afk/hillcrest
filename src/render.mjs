@@ -10,6 +10,9 @@ export function setImageResolver(fn) { imageUrls = fn; }
 
 let logo = { d: '', viewBox: '0 0 100 100' };
 let heroPoster = '/images/logo-mark-white.png';
+let assetVersion = { css: '', js: '' };
+// Content hashes appended to CSS/JS URLs so browsers fetch new builds instead of cached copies.
+export function setAssetVersion(v) { assetVersion = v; }
 export function setLogo(svgPath, viewBox) { logo = { d: svgPath, viewBox }; }
 export function setHeroPoster(url) { heroPoster = url; }
 
@@ -225,10 +228,10 @@ ${ogImage ? `<meta property="og:image" content="${C.SITE_URL}${ogImage}" />` : '
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/assets/site.css" />
-${page === 'home' ? `<link rel="modulepreload" href="/assets/main.js" />` : ''}
+<link rel="stylesheet" href="/assets/site.css?v=${assetVersion.css}" />
+${page === 'home' ? `<link rel="modulepreload" href="/assets/main.js?v=${assetVersion.js}" />` : ''}
 ${map(ld, (o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`)}
-<script type="module" src="/assets/main.js"></script>
+<script type="module" src="/assets/main.js?v=${assetVersion.js}"></script>
 </head>
 <body data-page="${page}">
 ${header(page)}

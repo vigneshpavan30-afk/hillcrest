@@ -196,6 +196,8 @@ const logoSvg = await loadLogoSvg();
 R.setLogo(logoSvg.d, logoSvg.viewBox);
 R.setHeroPoster(await buildHeroPoster());
 const bundles = await buildClient();
+const hashFile = async (rel) => (await import('node:crypto')).createHash('sha1').update(await fs.readFile(path.join(OUT, rel))).digest('hex').slice(0, 10);
+R.setAssetVersion({ css: await hashFile('assets/site.css'), js: await hashFile('assets/main.js') });
 R.setImageResolver((src) => {
   if (!images[src]) throw new Error(`Image not processed: ${src}`);
   return images[src];
