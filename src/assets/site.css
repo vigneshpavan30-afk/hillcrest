@@ -327,8 +327,8 @@ address { font-style: normal; }
 .marquee-track { display: flex; gap: 20px; width: max-content; animation: marquee 60s linear infinite; }
 .marquee:hover .marquee-track { animation-play-state: paused; }
 @keyframes marquee { to { transform: translateX(calc(-50% - 10px)); } }
-.rating-big { display: flex; align-items: baseline; gap: 18px; }
-.rating-big strong { font: 300 clamp(72px, 9vw, 128px)/.9 var(--serif); letter-spacing: -.04em; }
+.rating-big { display: flex; align-items: baseline; gap: 18px; margin-top: 22px; }
+.rating-big strong { font: 300 clamp(64px, 7vw, 104px)/1.05 var(--serif); letter-spacing: -.04em; }
 
 /* ---------- FAQ / accordions ---------- */
 .faq { border-top: 1px solid var(--line); }

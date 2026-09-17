@@ -464,7 +464,7 @@ ${map(C.ALL_REVIEWS, (r) => `<figure class="glass card tilt review" style="width
 <figcaption class="mono">${esc(r.name)} · Google</figcaption>
 </figure>`)}
 </div>
-<div class="container mt-l" data-reveal="up">${btn(C.pagePath('appointments'), 'Become a patient')}</div>
+<div class="container center mt-m" data-reveal="up">${btn(C.pagePath('appointments'), 'Book an appointment')}</div>
 </section>`;
 }
 
