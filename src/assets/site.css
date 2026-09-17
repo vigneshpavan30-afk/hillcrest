@@ -450,6 +450,7 @@ textarea.input { resize: vertical; min-height: 110px; }
 .center { text-align: center; }
 .mt-s { margin-top: 16px; } .mt-m { margin-top: 32px; } .mt-l { margin-top: 56px; }
 .sticky { position: sticky; top: calc(var(--header-h) + 24px); }
+@media (max-width: 960px) { .sticky { position: static; } } /* stacked layouts: pinned items would cover the text below */
 .gallery-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
 .gallery-grid figure:nth-child(3n+2) { margin-top: 40px; }
 @media (max-width: 700px) { .gallery-grid figure:nth-child(3n+2) { margin-top: 0; } }
