@@ -4,18 +4,10 @@ import { $, $$, postJson, formValues, markInvalid, PHONE, PHONE_RE } from './uti
 export function initHeader() {
   const header = $('[data-header]');
   if (!header) return;
-  let lastY = window.scrollY;
-  const onScroll = () => {
-    const y = window.scrollY;
-    header.classList.toggle('is-scrolled', y > 24);
-    const menuOpen = document.documentElement.classList.contains('menu-open');
-    header.classList.toggle('is-hidden', !menuOpen && y > 480 && y > lastY + 4);
-    if (y < lastY - 4 || y < 480) header.classList.remove('is-hidden');
-    lastY = y;
-  };
+  // The header stays fixed and visible; scrolling only adds a soft shadow.
+  const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 24);
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
-  header.addEventListener('focusin', () => header.classList.remove('is-hidden'));
 }
 
 export function initDropdowns() {
